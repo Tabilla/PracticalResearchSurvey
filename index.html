@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+        }
+        label, textarea {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Survey Questionnaire</h2>
+    <form id="surveyForm">
+        <label>Name: <input type="text" id="name" required></label>
+        <label>Age: <input type="number" id="age" required></label>
+        <label>Profession: <input type="text" id="profession" required></label>
+        <label>Sex: 
+            <select id="sex" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </label>
+        <label>Question 1: <textarea id="q1"></textarea></label>
+        <label>Question 2: <textarea id="q2"></textarea></label>
+        <label>Question 3: <textarea id="q3"></textarea></label>
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <script>
+        function submitForm() {
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const profession = document.getElementById("profession").value;
+            const sex = document.getElementById("sex").value;
+            const q1 = document.getElementById("q1").value;
+            const q2 = document.getElementById("q2").value;
+            const q3 = document.getElementById("q3").value;
+            
+            const data = { name, age, profession, sex, q1, q2, q3 };
+            
+            fetch("https://script.google.com/macros/s/AKfycbz71W2fA9AD96_d-OkZuLdRPEDLOw-h_L-NdgMEvCRiJncLpk9_9ja8qqnNNjTlHVuM/exec", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(data => alert("Response submitted successfully!"))
+            .catch(error => alert("Error submitting response."));
+        }
+    </script>
+</body>
+</html>
