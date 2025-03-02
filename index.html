@@ -44,6 +44,34 @@
     </form>
 
     <script>
+        function doGet(e) {
+      // ... your other code to process the request ...
+
+      // Add CORS headers to the response
+      return ContentService.createTextOutput(JSON.stringify(yourData)) // Replace yourData with your actual response
+          .setMimeType(ContentService.MimeType.JSON)
+          .addHeader('Access-Control-Allow-Origin', 'https://tabilla.github.io') // Allow only your GitHub Pages site
+          .addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS') // Allow the methods that you are using
+          .addHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the header that you are using
+    }
+    
+    function doPost(e) {
+       // ... your other code to process the request ...
+       
+       // Add CORS headers to the response
+      return ContentService.createTextOutput(JSON.stringify(yourData)) // Replace yourData with your actual response
+          .setMimeType(ContentService.MimeType.JSON)
+          .addHeader('Access-Control-Allow-Origin', 'https://tabilla.github.io') // Allow only your GitHub Pages site
+          .addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS') // Allow the methods that you are using
+          .addHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the header that you are using
+    }
+
+    function doOptions(e) {
+        return ContentService.createTextOutput('')
+            .addHeader('Access-Control-Allow-Origin', 'https://tabilla.github.io') // Or '*' for all origins (less secure)
+            .addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            .addHeader('Access-Control-Allow-Headers', 'Content-Type'); // Add any required headers for POST/PUT/PATCH
+    }
         function submitForm() {
             const name = document.getElementById("name").value;
             const age = document.getElementById("age").value;
@@ -55,7 +83,7 @@
             
             const data = { name, age, profession, sex, q1, q2, q3 };
             
-            fetch("https://script.google.com/macros/s/AKfycbz71W2fA9AD96_d-OkZuLdRPEDLOw-h_L-NdgMEvCRiJncLpk9_9ja8qqnNNjTlHVuM/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbxFcYd4NsM2IRzMXKUiYn1IL_eyAPTbpWEAlyaXeFoBW4nGVRTwfXitqsR5SjtM211s/exec", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
@@ -64,6 +92,28 @@
             .then(data => alert("Response submitted successfully!"))
             .catch(error => alert("Error submitting response."));
         }
+        function doPost(e) {
+        let header = {
+            "Access-Control-Allow-Origin": "*", // Change this to tabilla.github.io if you want it to be more secure
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Content-Type": "application/json",
+        };
+
+        try {
+            const data = JSON.parse(e.postData.contents);
+            const ss = SpreadsheetApp.openById("1LKVnYP6DOj4xzQi6Wv_mSpqS3QFIWecYbboNijhL830");
+            const sheet = ss.getSheetByName("Sheet1");
+            const row = [data.name, data.age, data.profession, data.sex, data.q1, data.q2, data.q3];
+            sheet.appendRow(row);
+            return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+                .setMimeType(ContentService.MimeType.JSON)
+                .setHeaders(header);
+        } catch (error) {
+          return ContentService.createTextOutput(JSON.stringify({ status: "failed" }))
+                .setMimeType(ContentService.MimeType.JSON)
+                .setHeaders(header);
+        }
+    }
     </script>
 </body>
 </html>
